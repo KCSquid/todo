@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 interface Task {
   value: string;
   checked: boolean;
-  dueDate?: Date;
+  dueDate?: string;
 }
 
 export function Main() {
@@ -30,7 +30,7 @@ export function Main() {
 
   return (
     <main className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-purple-950 via-blue-800 to-fuchsia-700">
-      <div className="sm:w-3/5 w-4/5 h-3/5 bg-white rounded-4xl shadow-lg p-8 flex flex-col gap-4">
+      <div className="md:w-3/5 w-4/5 h-3/5 bg-white rounded-4xl shadow-lg p-8 flex flex-col gap-4">
         <h1 className="text-3xl text-black font-bold mb-4">To-Do List 📝</h1>
         <div className="w-full h-24 relative">
           <input
@@ -41,7 +41,7 @@ export function Main() {
             className="bg-neutral-200 rounded-full h-full w-full px-6 text-neutral-700 outline-0 font-medium"
           />
           <button
-            className="outline-0 right-0 bg-violet-500 rounded-full uppercase font-bold z-50 absolute h-full md:w-fit md:px-20 w-1/4 cursor-pointer hover:bg-violet-600 active:bg-violet-700 transition-colors duration-300"
+            className="outline-0 right-0 bg-violet-500 rounded-full uppercase font-bold z-50 absolute h-full lg:w-fit lg:px-20 w-1/4 cursor-pointer hover:bg-violet-600 active:bg-violet-700 transition-colors duration-300"
             aria-label="Add this task to the list"
             onClick={() => {
               if (!ready) return;
@@ -157,7 +157,7 @@ function ListElement({
         </button>
         <input
           type="text"
-          className={`text-neutral-600 bg-transparent outline-none focus:underline  ${
+          className={`text-neutral-600 bg-transparent outline-none focus:underline lg:text-xl text-base  ${
             value.checked ? "line-through" : ""
           }`}
           value={value.value}
@@ -171,19 +171,37 @@ function ListElement({
           }}
         />
       </div>
-      <button
-        aria-label="Remove this task"
-        onClick={() => {
-          setListElements((prev) => prev.filter((_, i) => i !== index));
-        }}
-      >
-        <LucideX
-          size={24}
-          strokeWidth={3}
-          color="#525252"
-          className="cursor-pointer"
+      <div className="sm:flex items-center justify-center gap-2 hidden">
+        <input
+          type="date"
+          className={`scheme-light cursor-pointer focus:outline-2 outline-neutral-300 rounded-xl lg:p-2 lg:text-base p-0 text-sm ${
+            value.dueDate ? "text-black" : "text-white"
+          }`}
+          value={value.dueDate}
+          onChange={(e) => {
+            const selectedDate = e.target.value;
+            if (!selectedDate) return;
+            setListElements((prev) =>
+              prev.map((item, i) =>
+                i === index ? { ...item, dueDate: selectedDate } : item
+              )
+            );
+          }}
         />
-      </button>
+        <button
+          aria-label="Remove this task"
+          onClick={() => {
+            setListElements((prev) => prev.filter((_, i) => i !== index));
+          }}
+        >
+          <LucideX
+            size={24}
+            strokeWidth={3}
+            color="#525252"
+            className="cursor-pointer"
+          />
+        </button>
+      </div>
     </div>
   );
 }
